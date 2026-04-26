@@ -1,18 +1,40 @@
-from flask import Flask
-import time
-import threading
+# main.py
 
-app = Flask(__name__)
+from config import SKU_TESTE, DEPOSITO_ID, DEPOSITO_NOME, MODO_TESTE
+from procortex import buscar_estoque_fornecedor
+from bling import buscar_pedidos_nao_faturados
+from estoque_calc import calcular_comprometido, calcular_disponivel
+from logger import log
 
-@app.route("/")
-def health():
-    return "ESTOQUE BLING - OK"
 
-def loop_sync():
-    while True:
-        print("Executando loop de teste de estoque...")
-        time.sleep(900)  # 15 minutos
+def main():
+    log("======================================")
+    log("Iniciando ETAPA 1 - Leitura e cálculo")
+    log(f"SKU TESTE: {SKU_TESTE}")
+    log(f"Depósito: {DEPOSITO_NOME} ({DEPOSITO_ID})")
+    log("======================================")
+
+    estoque_procortex = buscar_estoque_fornecedor()
+
+    if SKU_TESTE not in estoque_procortex:
+        log(f"❌ SKU {SKU_TESTE} não encontrado no fornecedor")
+        return
+
+    estoque_total = estoque_procortex[SKU_TESTE]
+    log(f"Fornecedor (Procortex): {estoque_total}")
+
+    pedidos = buscar_pedidos_nao_faturados()
+    comprometido = calcular_comprometido(pedidos, SKU_TESTE)
+    log(f"Comprometido no Bling: {comprometido}")
+
+    estoque_disponivel = calcular_disponivel(estoque_total, comprometido)
+    log(f"✅ Estoque disponível calculado: {estoque_disponivel}")
+
+    log("======================================")
+    log("ETAPA 1 FINALIZADA COM SUCESSO")
+    log("Nenhuma atualização no Bling foi feita")
+    log("======================================")
+
 
 if __name__ == "__main__":
-    threading.Thread(target=loop_sync, daemon=True).start()
-    app.run(host="0.0.0.0", port=10000)
+    main()
