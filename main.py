@@ -1,15 +1,14 @@
 from procortex import buscar_estoque_procortex
 
 SKU_TESTE = "4504400"
-ARQUIVO_ESTOQUE = "estoque_rio_preto_2026-04-26T21_12_54.101357277Z.json"
 
 
 def main():
     print("======================================")
-    print("ETAPA 1 - Leitura do Procortex")
+    print("ETAPA 1 - Leitura ONLINE do Procortex")
     print("======================================")
 
-    estoque = buscar_estoque_procortex(ARQUIVO_ESTOQUE)
+    estoque = buscar_estoque_procortex()
 
     if SKU_TESTE not in estoque:
         print(f"❌ SKU {SKU_TESTE} não encontrado")
