@@ -2,8 +2,9 @@
 
 SKU_TESTE = "4504400"
 
-DEPOSITO_NOME = "SS-Rio Preto"
-DEPOSITO_ID = 14888665295
+# Depósito do fornecedor que será considerado
+DEPOSITO_FORNECEDOR = "RIO PRETO"
 
-# Controle de execução
-MODO_TESTE = True   # nunca atualiza estoque
+# Depósito destino no Bling
+DEPOSITO_BLING_NOME = "SS-Rio Preto"
+DEPOSITO_BLING_ID = 14888665295
